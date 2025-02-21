@@ -37,6 +37,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.*
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.DateRange
+import androidx.compose.material.icons.filled.Favorite
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -48,11 +53,22 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.ViewModel
+import com.mobile.recorduserapp.ui.theme.black
+import com.mobile.recorduserapp.ui.theme.hintcolor
+import com.mobile.recorduserapp.ui.theme.hinttextcolor
 import com.mobile.recorduserapp.ui.theme.litg
+import com.mobile.recorduserapp.ui.theme.litred
 import com.mobile.recorduserapp.ui.theme.whitecolor
 import com.mobile.recorduserapp.ui.viewmodel.HomeViewModel
 import com.mobile.recorduserapp.utils.buttons.appbutton
 import com.mobile.recorduserapp.utils.sh10
+import com.mobile.recorduserapp.utils.sh20
+import com.mobile.recorduserapp.utils.sh5
+import com.mobile.recorduserapp.utils.sw10
+import androidx.compose.material3.*
+import com.mobile.recorduserapp.ui.theme.blueIconColor
+import com.mobile.recorduserapp.ui.theme.greywhite
+import com.mobile.recorduserapp.ui.theme.litgrey
 
 
 @Composable
@@ -62,6 +78,11 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
     val allusers by viewModel.liveUsers.observeAsState()
     val error by viewModel.error.observeAsState()
 
+    var selectedTab by remember { mutableStateOf(0) }
+    val items = listOf("Home", "Generator", "Add", "Fav", "Planner")
+    val icons = listOf(
+        Icons.Default.Home, Icons.Default.Build, Icons.Default.Add, Icons.Default.Favorite, Icons.Default.DateRange
+    )
 
     allusers.let { println("DDDAATAA:: +" + it) }
     println("USERSSFONUND:: "+allusers)
@@ -102,12 +123,14 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
             textlit(text = "Are you excited to create a tasty dish today? ", size = 14, color = greyTextColor)
 
 
+
             var text by remember { mutableStateOf("") }
 
             OutlinedTextField(
                 value = text,
                 onValueChange = { text = it },
-                placeholder = { Text("Search...", color = Color.Gray) },
+                placeholder = { Text("Search foods...", color = Color.Gray) },
+
                 leadingIcon = {
                     Icon(
                         imageVector = Icons.Default.Search,
@@ -127,26 +150,69 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
             )
             sh10()
 
-            Row {
-                Box(modifier = Modifier.height(30.dp)){
-                    textlit(text = "All", size = 13, color = whitecolor)
+            Row(modifier = Modifier.fillMaxWidth()){
+
+                Box(modifier = Modifier
+                    .height(40.dp)
+                    .width(60.dp)
+                    .background(blueIconColor, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
+
+                    textboldcutom(text = "All", size = 13, color = whitecolor)
                 }
+
+                sw10()
+
+                Box(modifier = Modifier
+                    .height(40.dp)
+                    .background(litgrey, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
+
+                    textlit(text = "Morning Feast", size = 10, color = black, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+
+                sw10()
+                Box(modifier = Modifier
+                    .height(40.dp)
+                    .background(litgrey, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
+
+                    textlit(text = "Sunrise Meal", size = 10, color = black, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+
+    sw10()
+                Box(modifier = Modifier
+                    .height(40.dp)
+                    .background(litgrey, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
+
+                    textlit(text = "Dawn Delicacies", size = 10, color = black, modifier = Modifier.padding(horizontal = 10.dp))
+                }
+
+
+
+
             }
-            textboldcutom(text = "All ", size = 14, color = Color.Black)
+
+
+            textboldcutom(text = "All Foods", size = 15, color = Color.Black)
+
+            sh10()
+
 
             Box(
                 modifier = Modifier
-                    .height(250.dp)
-                    .fillMaxWidth().border(color = greyTextColor, width = 1.dp, shape = RoundedCornerShape(10.dp))
+                    .height(280.dp)
+                    .fillMaxWidth()
+                    .border(color = greyTextColor, width = 0.2.dp, shape = RoundedCornerShape(5.dp))
             ) {
 
 
-
-                Column(modifier = Modifier.fillMaxSize().padding(0.dp)) {
+                Column(modifier = Modifier
+                    .fillMaxSize()
+                    .padding(0.dp)) {
 
                     addimage(image = R.drawable.food, modifier = Modifier.fillMaxWidth())
 
-                        Column(modifier = Modifier.fillMaxWidth().padding(10.dp)) {
+                        Column(modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(10.dp)) {
 
                         Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -162,14 +228,16 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
                     }
 
                     Row(modifier = Modifier.fillMaxWidth()) {
-                        addimage(image = R.drawable.fire)
+                        addimage(image = R.drawable.fire, modifier = Modifier.size(24.dp))
                         textlit(
                             text = "320 Calories",
-                            size = 14,
-                            color = Color.Black,
+                            size = 13,
+                            color = hinttextcolor,
                             modifier = Modifier.padding(start = 8.dp) // Adds spacing from image
                         )
                     }
+
+                            sh5()
                     Row(modifier = Modifier.fillMaxWidth()) {
                         textlit(
                             text = "Creamy hummus spread on whole grain toast topped with sliced cucumbers and radishes.",
@@ -177,6 +245,27 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
                             color = Color.Black,
                             modifier = Modifier.padding(start = 0.dp)
                         )
+                    }
+
+                            sh10()
+                            Row(modifier = Modifier.fillMaxWidth()){
+                            Box(modifier = Modifier
+                                .height(60.dp)
+                                .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
+
+                                textlit(text = "healthy", size = 10, color = black,modifier = Modifier.padding(horizontal = 5.dp))
+                            }
+
+                                sw10()
+                               Box(modifier = Modifier
+                                   .height(60.dp)
+                                   .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
+
+                                textlit(text = "vegetarian", size = 10, color = black, modifier = Modifier.padding(horizontal = 5.dp))
+                            }
+
+
+
                     }
                     }
 
@@ -207,6 +296,24 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
         }
 
 
+
+        NavigationBar(containerColor = Color.White) {
+            items.forEachIndexed { index, item ->
+                NavigationBarItem(
+                    selected = selectedTab == index,
+                    onClick = { selectedTab = index },
+                    icon = {
+                        Icon(
+                            imageVector = icons[index],
+                            contentDescription = item
+                        )
+                    },
+                    label = {
+                        Text(text = item)
+                    }
+                )
+            }
+        }
 
     }
     }
