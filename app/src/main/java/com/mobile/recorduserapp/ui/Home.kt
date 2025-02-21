@@ -1,5 +1,6 @@
 package com.mobile.recorduserapp.ui
 
+import android.widget.Toast
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -66,7 +67,9 @@ import com.mobile.recorduserapp.utils.sh20
 import com.mobile.recorduserapp.utils.sh5
 import com.mobile.recorduserapp.utils.sw10
 import androidx.compose.material3.*
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavController
+import com.mobile.recorduserapp.data.cons.ADDFOOD
 import com.mobile.recorduserapp.ui.theme.blueIconColor
 import com.mobile.recorduserapp.ui.theme.greywhite
 import com.mobile.recorduserapp.ui.theme.litgrey
@@ -75,10 +78,14 @@ import com.mobile.recorduserapp.ui.theme.litgrey
 @Composable
 fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel(),navController: NavController){
 
+    var context = LocalContext.current
 
     val allusers by viewModel.liveUsers.observeAsState()
     val error by viewModel.error.observeAsState()
 
+error?.let {
+    Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
+}
 
 
 
@@ -88,9 +95,35 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel(),nav
 
     LaunchedEffect(key1 = Unit) {
         viewModel.getUsers()
+
+        if (error != null){
+            Toast.makeText(context,error,Toast.LENGTH_SHORT).show()
+        }
     }
+
+    Scaffold(
+        floatingActionButton = {
+            FloatingActionButton(
+                onClick = {
+
+                    navController.navigate(ADDFOOD)
+                    // Add your action here
+                    println("FAB Clicked!")
+                },
+                containerColor = Color(0xFF6200EE), // Purple color
+                contentColor = Color.White
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Add,
+                    contentDescription = "Add"
+                )
+            }
+        }
+    ) {innerPadding->
     Column (
-        modifier = modifier
+        modifier = Modifier.padding(innerPadding)
+            .padding(0.dp)
+
             .background(Color.White)
             .fillMaxSize()) {
 
@@ -195,91 +228,93 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel(),nav
             sh10()
 
 
-            Box(
-                modifier = Modifier
-                    .height(280.dp)
-                    .fillMaxWidth()
-                    .border(color = greyTextColor, width = 0.2.dp, shape = RoundedCornerShape(5.dp))
-            ) {
-
-
-                Column(modifier = Modifier
-                    .fillMaxSize()
-                    .padding(0.dp)) {
-
-                    addimage(image = R.drawable.food, modifier = Modifier.fillMaxWidth())
-
-                        Column(modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(10.dp)) {
-
-                        Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        textboldcutom(
-                            text = "Garlic Butter Shrimp Pasta",
-                            size = 14,
-                            color = Color.Black,
-                            modifier = Modifier.weight(1f) // Ensures text gets space
-                        )
-                        addimage(image = R.drawable.like)
-                    }
-
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        addimage(image = R.drawable.fire, modifier = Modifier.size(24.dp))
-                        textlit(
-                            text = "320 Calories",
-                            size = 13,
-                            color = hinttextcolor,
-                            modifier = Modifier.padding(start = 8.dp) // Adds spacing from image
-                        )
-                    }
-
-                            sh5()
-                    Row(modifier = Modifier.fillMaxWidth()) {
-                        textlit(
-                            text = "Creamy hummus spread on whole grain toast topped with sliced cucumbers and radishes.",
-                            size = 14,
-                            color = Color.Black,
-                            modifier = Modifier.padding(start = 0.dp)
-                        )
-                    }
-
-                            sh10()
-                            Row(modifier = Modifier.fillMaxWidth()){
-                            Box(modifier = Modifier
-                                .height(60.dp)
-                                .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
-
-                                textlit(text = "healthy", size = 10, color = black,modifier = Modifier.padding(horizontal = 5.dp))
-                            }
-
-                                sw10()
-                               Box(modifier = Modifier
-                                   .height(60.dp)
-                                   .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
-
-                                textlit(text = "vegetarian", size = 10, color = black, modifier = Modifier.padding(horizontal = 5.dp))
-                            }
-
-
-
-                    }
-                    }
-
-                }
-            }
-
-
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(500.dp)
             )
             {
-                allusers?.let {
-                    items(allusers!!.data!!) {
+                allusers?.data?.let { dish->
+                    items(dish) { food->
+
+
+
+                        Box(
+                            modifier = Modifier
+                                .height(280.dp)
+                                .fillMaxWidth()
+                                .border(color = greyTextColor, width = 0.2.dp, shape = RoundedCornerShape(5.dp))
+                        ) {
+
+
+                            Column(modifier = Modifier
+                                .fillMaxSize()
+                                .padding(0.dp)) {
+
+                                addimage(image = R.drawable.food, modifier = Modifier.fillMaxWidth())
+
+                                Column(modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(10.dp)) {
+
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween
+                                    ) {
+                                        textboldcutom(
+                                            text = "${food?.description}",
+                                            size = 14,
+                                            color = Color.Black,
+                                            modifier = Modifier.weight(1f) // Ensures text gets space
+                                        )
+                                        addimage(image = R.drawable.like)
+                                    }
+
+
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        addimage(image = R.drawable.fire, modifier = Modifier.size(24.dp))
+                                        textlit(
+                                            text = "${food?.calories}",
+                                            size = 13,
+                                            color = hinttextcolor,
+                                            modifier = Modifier.padding(start = 8.dp) // Adds spacing from image
+                                        )
+                                    }
+
+                                    sh5()
+                                    Row(modifier = Modifier.fillMaxWidth()) {
+                                        textlit(
+                                            text = "Creamy hummus spread on whole grain toast topped with sliced cucumbers and radishes.",
+                                            size = 14,
+                                            color = Color.Black,
+                                            modifier = Modifier.padding(start = 0.dp)
+                                        )
+                                    }
+
+                                    sh10()
+                                    Row(modifier = Modifier.fillMaxWidth()){
+                                        Box(modifier = Modifier
+                                            .height(60.dp)
+                                            .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
+
+                                            textlit(text = "healthy", size = 10, color = black,modifier = Modifier.padding(horizontal = 5.dp))
+                                        }
+
+                                        sw10()
+                                        Box(modifier = Modifier
+                                            .height(60.dp)
+                                            .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
+
+                                            textlit(text = "vegetarian", size = 10, color = black, modifier = Modifier.padding(horizontal = 5.dp))
+                                        }
+
+
+
+                                    }
+                                }
+
+                            }
+                        }
 
 
 
@@ -294,6 +329,7 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel(),nav
             appbutton("Add", modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp))
         }
 
+    }
     }
     }
 

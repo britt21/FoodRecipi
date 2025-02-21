@@ -24,7 +24,7 @@ interface Service{
 
 
     @GET("api/foods")
-    suspend  fun getUsers():Response<FoodResponse>
+    suspend  fun getfood():Response<FoodResponse>
 
 
 

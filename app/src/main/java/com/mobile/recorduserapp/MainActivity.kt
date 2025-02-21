@@ -75,7 +75,16 @@ class MainActivity : ComponentActivity() {
                                 NavigationBarItem(
 
                                     selected = selectedTab == index,
-                                    onClick = { selectedTab = index },
+                                    onClick = { selectedTab = index
+
+                                        when (index) {
+                                            0 -> navController.navigate(HOMESCREEN)  // Home Screen
+                                            1 ->""
+                                            2 -> navController.navigate(ADDFOOD)  // Add Screen
+                                            3 -> ""
+                                            4 -> ""
+                                        }
+                                              },
                                     icon = {
                                         Image(
                                             painter = painterResource(id = icons[index]),
