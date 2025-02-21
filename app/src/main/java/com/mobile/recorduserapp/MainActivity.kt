@@ -36,7 +36,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.google.accompanist.systemuicontroller.rememberSystemUiController
+import com.mobile.recorduserapp.data.cons.ADDFOOD
 import com.mobile.recorduserapp.data.cons.HOMESCREEN
+import com.mobile.recorduserapp.ui.AddFood
 import com.mobile.recorduserapp.ui.HomeScreen
 import com.mobile.recorduserapp.ui.theme.RecordUserAppTheme
 import com.mobile.recorduserapp.ui.theme.black
@@ -100,8 +102,13 @@ class MainActivity : ComponentActivity() {
                         startDestination = HOMESCREEN
                     ) {
                         composable(HOMESCREEN) {
-                            HomeScreen(modifier = Modifier.fillMaxSize()) // Optional: Adjust if needed
+                            HomeScreen(modifier = Modifier.fillMaxSize(), navController = navController) // Optional: Adjust if needed
                         }
+                          composable(ADDFOOD) {
+                            AddFood(modifier = Modifier.fillMaxSize(),navController) // Optional: Adjust if needed
+                        }
+
+
                     }
                 }
 

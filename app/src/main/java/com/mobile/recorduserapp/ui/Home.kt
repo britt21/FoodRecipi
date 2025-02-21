@@ -66,23 +66,21 @@ import com.mobile.recorduserapp.utils.sh20
 import com.mobile.recorduserapp.utils.sh5
 import com.mobile.recorduserapp.utils.sw10
 import androidx.compose.material3.*
+import androidx.navigation.NavController
 import com.mobile.recorduserapp.ui.theme.blueIconColor
 import com.mobile.recorduserapp.ui.theme.greywhite
 import com.mobile.recorduserapp.ui.theme.litgrey
 
 
 @Composable
-fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
+fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel(),navController: NavController){
 
 
     val allusers by viewModel.liveUsers.observeAsState()
     val error by viewModel.error.observeAsState()
 
-    var selectedTab by remember { mutableStateOf(0) }
-    val items = listOf("Home", "Generator", "Add", "Fav", "Planner")
-    val icons = listOf(
-        Icons.Default.Home, Icons.Default.Build, Icons.Default.Add, Icons.Default.Favorite, Icons.Default.DateRange
-    )
+
+
 
     allusers.let { println("DDDAATAA:: +" + it) }
     println("USERSSFONUND:: "+allusers)
@@ -166,7 +164,7 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
                     .height(40.dp)
                     .background(litgrey, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
 
-                    textlit(text = "Morning Feast", size = 10, color = black, modifier = Modifier.padding(horizontal = 10.dp))
+                    textlit(text = "Morning Feast", size = 11, color = black, modifier = Modifier.padding(horizontal = 5.dp))
                 }
 
                 sw10()
@@ -174,7 +172,7 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
                     .height(40.dp)
                     .background(litgrey, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
 
-                    textlit(text = "Sunrise Meal", size = 10, color = black, modifier = Modifier.padding(horizontal = 10.dp))
+                    textlit(text = "Sunrise Meal", size = 11, color = black, modifier = Modifier.padding(horizontal = 5.dp))
                 }
 
     sw10()
@@ -182,7 +180,7 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
                     .height(40.dp)
                     .background(litgrey, shape = RoundedCornerShape(5.dp),), contentAlignment = Alignment.Center){
 
-                    textlit(text = "Dawn Delicacies", size = 10, color = black, modifier = Modifier.padding(horizontal = 10.dp))
+                    textlit(text = "Dawn Delicacies", size = 11, color = black, modifier = Modifier.padding(horizontal = 3.dp))
                 }
 
 
@@ -191,7 +189,8 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
             }
 
 
-            textboldcutom(text = "All Foods", size = 15, color = Color.Black)
+            sh20()
+            textboldcutom(text = "All Foods", size = 13, color = Color.Black)
 
             sh10()
 
@@ -293,26 +292,6 @@ fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel()){
 
         Column (modifier = Modifier.fillMaxSize(), verticalArrangement = Arrangement.Bottom){
             appbutton("Add", modifier = Modifier.padding(horizontal = 10.dp, vertical = 10.dp))
-        }
-
-
-
-        NavigationBar(containerColor = Color.White) {
-            items.forEachIndexed { index, item ->
-                NavigationBarItem(
-                    selected = selectedTab == index,
-                    onClick = { selectedTab = index },
-                    icon = {
-                        Icon(
-                            imageVector = icons[index],
-                            contentDescription = item
-                        )
-                    },
-                    label = {
-                        Text(text = item)
-                    }
-                )
-            }
         }
 
     }
