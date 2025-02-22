@@ -1,6 +1,7 @@
 package com.mobile.recorduserapp.ui
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -39,6 +40,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import com.mobile.recorduserapp.ui.theme.black
@@ -52,12 +54,15 @@ import com.mobile.recorduserapp.utils.sh20
 import com.mobile.recorduserapp.utils.sh5
 import com.mobile.recorduserapp.utils.sw10
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import coil3.compose.rememberAsyncImagePainter
 import com.google.accompanist.placeholder.PlaceholderHighlight
 import com.google.accompanist.placeholder.material.placeholder
 import com.google.accompanist.placeholder.material.shimmer
 import com.mobile.recorduserapp.data.cons.ADDFOOD
+import com.mobile.recorduserapp.data.response.foods.FoodImage
 import com.mobile.recorduserapp.ui.theme.blueIconColor
 import com.mobile.recorduserapp.ui.theme.litgrey
 import com.mobile.recorduserapp.utils.error.errorbox
@@ -228,12 +233,13 @@ error?.let {
                 if (isloading == true) {
                     items(5) {
 
-                        FoodCard("", "", R.drawable.food, emptyList(), isLoading = true)
+                        FoodCard("", "", emptyList(), emptyList(), isLoading = true)
                     }
                 }else{
                     allusers?.data?.let { dish->
                     items(dish) { food->
-                        FoodCard("${food?.description}","${food?.calories}",R.drawable.food,food!!.foodTags!!,)
+
+                        FoodCard("${food?.description}","${food?.calories}",food?.foodImages!!,food?.foodTags!!,)
 
 
 
@@ -337,7 +343,7 @@ error?.let {
 fun FoodCard(
     description: String,
     calories: String,
-    imageRes: Int,
+    imageRes: List<FoodImage?> = listOf(),
     tags: List<String?> = listOf(),
     onLikeClick: () -> Unit = {},
     isLoading :Boolean = false
@@ -358,9 +364,13 @@ fun FoodCard(
                 .fillMaxSize()
                 .padding(0.dp)
         ) {
-            // Food Image
-            addimage(image = imageRes, modifier = Modifier.fillMaxWidth())
+            imageRes.forEach { image->
 
+
+                Image(painter = rememberAsyncImagePainter(image?.image_url), contentDescription = "", modifier = Modifier.fillMaxWidth().height(60.dp), contentScale = ContentScale.Crop,)
+                // Food Image
+//                addimage(image = image.image_url, modifier = Modifier.fillMaxWidth())
+            }
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -376,6 +386,7 @@ fun FoodCard(
                         size = 14,
                         color = Color.Black,
                         modifier = Modifier.weight(1f)
+                            .height(50.dp)
                     )
                     addimage(image = R.drawable.like, Modifier.clickable { onLikeClick() })
                 }
