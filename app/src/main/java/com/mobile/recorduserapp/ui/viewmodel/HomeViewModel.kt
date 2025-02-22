@@ -30,6 +30,7 @@ class HomeViewModel:ViewModel() {
     }
 
     fun getUsers() {
+        error.value = null
         isloading.value = true
         viewModelScope.launch {
             try {
