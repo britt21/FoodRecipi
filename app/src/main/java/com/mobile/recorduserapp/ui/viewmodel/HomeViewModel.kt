@@ -39,6 +39,10 @@ class HomeViewModel:ViewModel() {
                     liveUsers.value = response.body()
                     isloading.value = false
 
+                }else{
+                    error.value = "Unknown error occurred"
+                    isloading.value = false
+
                 }
 
             } catch (e: IOException) {
