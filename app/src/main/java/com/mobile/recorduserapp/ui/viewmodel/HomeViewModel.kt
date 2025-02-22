@@ -23,13 +23,12 @@ class HomeViewModel:ViewModel() {
         error.value = message
 
         // Automatically clear the error after 3 seconds
-        viewModelScope.launch {
-            delay(2000)
-            error.value = null
-        }
+
+
     }
 
     fun getUsers() {
+        error.value = null
         isloading.value = true
         viewModelScope.launch {
             try {

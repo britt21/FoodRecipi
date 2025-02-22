@@ -1,9 +1,9 @@
 package com.mobile.recorduserapp.ui
 
 import android.widget.Toast
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -15,9 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -37,27 +35,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.*
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.compose.ui.*
-import androidx.compose.ui.modifier.*
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.ViewModel
 import com.mobile.recorduserapp.ui.theme.black
-import com.mobile.recorduserapp.ui.theme.hintcolor
 import com.mobile.recorduserapp.ui.theme.hinttextcolor
-import com.mobile.recorduserapp.ui.theme.litg
 import com.mobile.recorduserapp.ui.theme.litred
 import com.mobile.recorduserapp.ui.theme.whitecolor
 import com.mobile.recorduserapp.ui.viewmodel.HomeViewModel
@@ -66,14 +51,16 @@ import com.mobile.recorduserapp.utils.sh10
 import com.mobile.recorduserapp.utils.sh20
 import com.mobile.recorduserapp.utils.sh5
 import com.mobile.recorduserapp.utils.sw10
-import androidx.compose.material3.*
 import androidx.compose.ui.platform.LocalContext
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.google.accompanist.placeholder.PlaceholderHighlight
+import com.google.accompanist.placeholder.material.placeholder
+import com.google.accompanist.placeholder.material.shimmer
 import com.mobile.recorduserapp.data.cons.ADDFOOD
 import com.mobile.recorduserapp.ui.theme.blueIconColor
-import com.mobile.recorduserapp.ui.theme.greywhite
 import com.mobile.recorduserapp.ui.theme.litgrey
+import com.mobile.recorduserapp.utils.error.errorbox
 
 
 @Composable
@@ -83,6 +70,7 @@ fun HomeScreen(modifier: Modifier, viewModel: HomeViewModel = viewModel(), navCo
 
     val allusers by viewModel.liveUsers.observeAsState()
     val error by viewModel.error.observeAsState()
+    val isloading by viewModel.isloading.observeAsState()
 
 error?.let {
     Toast.makeText(context, error, Toast.LENGTH_SHORT).show()
@@ -135,7 +123,9 @@ error?.let {
                 .fillMaxWidth()
 
         ) {
-
+            error?.let {
+                errorbox("Error","${it}",{ true}, { viewModel.getUsers()})
+            }
 
             Row(
                 modifier = Modifier
@@ -235,86 +225,94 @@ error?.let {
                     .height(500.dp)
             )
             {
-                allusers?.data?.let { dish->
+                if (isloading == true) {
+                    items(5) {
+
+                        FoodCard("", "", R.drawable.food, emptyList(), isLoading = true)
+                    }
+                }else{
+                    allusers?.data?.let { dish->
                     items(dish) { food->
+                        FoodCard("${food?.description}","${food?.calories}",R.drawable.food,food!!.foodTags!!,)
 
 
 
-                        Box(
-                            modifier = Modifier
-                                .height(280.dp)
-                                .fillMaxWidth()
-                                .border(color = greyTextColor, width = 0.2.dp, shape = RoundedCornerShape(5.dp))
-                        ) {
-
-
-                            Column(modifier = Modifier
-                                .fillMaxSize()
-                                .padding(0.dp)) {
-
-                                addimage(image = R.drawable.food, modifier = Modifier.fillMaxWidth())
-
-                                Column(modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(10.dp)) {
-
-                                    Row(
-                                        modifier = Modifier.fillMaxWidth(),
-                                        horizontalArrangement = Arrangement.SpaceBetween
-                                    ) {
-                                        textboldcutom(
-                                            text = "${food?.description}",
-                                            size = 14,
-                                            color = Color.Black,
-                                            modifier = Modifier.weight(1f) // Ensures text gets space
-                                        )
-                                        addimage(image = R.drawable.like)
-                                    }
-
-
-                                    Row(modifier = Modifier.fillMaxWidth()) {
-                                        addimage(image = R.drawable.fire, modifier = Modifier.size(24.dp))
-                                        textlit(
-                                            text = "${food?.calories}",
-                                            size = 13,
-                                            color = hinttextcolor,
-                                            modifier = Modifier.padding(start = 8.dp) // Adds spacing from image
-                                        )
-                                    }
-
-                                    sh5()
-                                    Row(modifier = Modifier.fillMaxWidth()) {
-                                        textlit(
-                                            text = "Creamy hummus spread on whole grain toast topped with sliced cucumbers and radishes.",
-                                            size = 14,
-                                            color = Color.Black,
-                                            modifier = Modifier.padding(start = 0.dp)
-                                        )
-                                    }
-
-                                    sh10()
-                                    Row(modifier = Modifier.fillMaxWidth()){
-                                        Box(modifier = Modifier
-                                            .height(60.dp)
-                                            .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
-
-                                            textlit(text = "healthy", size = 10, color = black,modifier = Modifier.padding(horizontal = 5.dp))
-                                        }
-
-                                        sw10()
-                                        Box(modifier = Modifier
-                                            .height(60.dp)
-                                            .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
-
-                                            textlit(text = "vegetarian", size = 10, color = black, modifier = Modifier.padding(horizontal = 5.dp))
-                                        }
-
-
-
-                                    }
-                                }
-
-                            }
+//                        Box(
+//                            modifier = Modifier
+//                                .height(280.dp)
+//                                .fillMaxWidth()
+//                                .border(color = greyTextColor, width = 0.2.dp, shape = RoundedCornerShape(5.dp))
+//                        ) {
+//
+//
+//                            Column(modifier = Modifier
+//                                .fillMaxSize()
+//                                .padding(0.dp)) {
+//
+//                                addimage(image = R.drawable.food, modifier = Modifier.fillMaxWidth())
+//
+//                                Column(modifier = Modifier
+//                                    .fillMaxWidth()
+//                                    .padding(10.dp)) {
+//
+//                                    Row(
+//                                        modifier = Modifier.fillMaxWidth(),
+//                                        horizontalArrangement = Arrangement.SpaceBetween
+//                                    ) {
+//                                        textboldcutom(
+//                                            text = "${food?.description}",
+//                                            size = 14,
+//                                            color = Color.Black,
+//                                            modifier = Modifier.weight(1f) // Ensures text gets space
+//                                        )
+//                                        addimage(image = R.drawable.like)
+//                                    }
+//
+//
+//                                    Row(modifier = Modifier.fillMaxWidth()) {
+//                                        addimage(image = R.drawable.fire, modifier = Modifier.size(24.dp))
+//                                        textlit(
+//                                            text = "${food?.calories}",
+//                                            size = 13,
+//                                            color = hinttextcolor,
+//                                            modifier = Modifier.padding(start = 8.dp) // Adds spacing from image
+//                                        )
+//                                    }
+//
+//                                    sh5()
+//                                    Row(modifier = Modifier.fillMaxWidth()) {
+//                                        textlit(
+//                                            text = "Creamy hummus spread on whole grain toast topped with sliced cucumbers and radishes.",
+//                                            size = 14,
+//                                            color = Color.Black,
+//                                            modifier = Modifier.padding(start = 0.dp)
+//                                        )
+//                                    }
+//
+//                                    sh10()
+//                                    Row(modifier = Modifier.fillMaxWidth()){
+//                                        Box(modifier = Modifier
+//                                            .height(60.dp)
+//                                            .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
+//
+//                                            textlit(text = "healthy", size = 10, color = black,modifier = Modifier.padding(horizontal = 5.dp))
+//                                        }
+//
+//                                        sw10()
+//                                        Box(modifier = Modifier
+//                                            .height(60.dp)
+//                                            .background(color = litred, shape = RoundedCornerShape(6.dp)), contentAlignment = Alignment.Center){
+//
+//                                            textlit(text = "vegetarian", size = 10, color = black, modifier = Modifier.padding(horizontal = 5.dp))
+//                                        }
+//
+//
+//
+//                                    }
+//                                }
+//
+//                            }
+//                            }
                         }
 
 
@@ -334,25 +332,95 @@ error?.let {
     }
     }
 
-@Composable
-fun LocationCard(name: String, country: String, latitude: String, longitude: String) {
-    Card(
-        shape = RoundedCornerShape(12.dp),
-        colors = CardDefaults.cardColors(containerColor = litg),
 
-        elevation = CardDefaults.cardElevation(defaultElevation = 4.dp),
+@Composable
+fun FoodCard(
+    description: String,
+    calories: String,
+    imageRes: Int,
+    tags: List<String?> = listOf(),
+    onLikeClick: () -> Unit = {},
+    isLoading :Boolean = false
+) {
+    sh20()
+    Box(
         modifier = Modifier
+            .height(280.dp)
             .fillMaxWidth()
-            .padding(16.dp)
+            .border(color = greyTextColor, width = 0.2.dp, shape = RoundedCornerShape(5.dp))
+            .placeholder(
+                visible = isLoading,
+        highlight = PlaceholderHighlight.shimmer()
+    )
     ) {
         Column(
             modifier = Modifier
-                .padding(16.dp)
+                .fillMaxSize()
+                .padding(0.dp)
         ) {
-            InfoText(title = "Name:", value = name, isBold = true)
-            InfoText(title = "Country:", value = country)
-            InfoText(title = "Latitude:", value = latitude)
-            InfoText(title = "Longitude:", value = longitude)
+            // Food Image
+            addimage(image = imageRes, modifier = Modifier.fillMaxWidth())
+
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(10.dp)
+            ) {
+                // Title and Like Icon
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    textboldcutom(
+                        text = description,
+                        size = 14,
+                        color = Color.Black,
+                        modifier = Modifier.weight(1f)
+                    )
+                    addimage(image = R.drawable.like, Modifier.clickable { onLikeClick() })
+                }
+
+                // Calories Section
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    addimage(image = R.drawable.fire, modifier = Modifier.size(24.dp))
+                    textlit(
+                        text = "$calories kcal",
+                        size = 13,
+                        color = hinttextcolor,
+                        modifier = Modifier.padding(start = 8.dp)
+                    )
+                }
+
+                sh5()
+
+                // Description (Hardcoded text - can be passed as param)
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    textlit(
+                        text = "Creamy hummus spread on whole grain toast topped with sliced cucumbers and radishes.",
+                        size = 14,
+                        color = Color.Black
+                    )
+                }
+
+                sh10()
+
+                // Tags (Dynamic)
+                Row(modifier = Modifier.fillMaxWidth()) {
+                    tags.forEach { tag ->
+                        Box(
+                            modifier = Modifier
+                                .height(30.dp)
+                                .background(color = litred, shape = RoundedCornerShape(6.dp))
+                                .padding(horizontal = 8.dp)
+                                .wrapContentWidth(),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            textlit(text = tag!!, size = 10, color = black)
+                        }
+                        sw10()
+                    }
+                }
+            }
         }
     }
 }
