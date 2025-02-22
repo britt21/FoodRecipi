@@ -76,7 +76,6 @@ import com.mobile.recorduserapp.ui.theme.greywhite
 import com.mobile.recorduserapp.ui.theme.litgrey
 
 
-
 @Composable
 fun HomeScreen(modifier: Modifier, viewModel: HomeViewModel = viewModel(), navController: NavController){
 
