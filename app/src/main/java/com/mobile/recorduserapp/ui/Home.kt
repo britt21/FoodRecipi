@@ -68,6 +68,7 @@ import com.mobile.recorduserapp.utils.sh5
 import com.mobile.recorduserapp.utils.sw10
 import androidx.compose.material3.*
 import androidx.compose.ui.platform.LocalContext
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.mobile.recorduserapp.data.cons.ADDFOOD
 import com.mobile.recorduserapp.ui.theme.blueIconColor
@@ -76,7 +77,7 @@ import com.mobile.recorduserapp.ui.theme.litgrey
 
 
 @Composable
-fun HomeScreen(modifier: Modifier,viewModel: HomeViewModel = HomeViewModel(),navController: NavController){
+fun HomeScreen(modifier: Modifier, viewModel: HomeViewModel = viewModel(), navController: NavController){
 
     var context = LocalContext.current
 
