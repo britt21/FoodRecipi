@@ -7,13 +7,17 @@ Clone the Repository
 git clone [https://github.com/your-username/record-user-app.git](https://github.com/britt21/FoodRecipi.git)
 
 
-We handled network error state, user should see a toast message when an network error occurs some other error like Server error was also properly handled 
 
 ## Image Loading (I noticed the image takes sometime to load from the network (probably large))
 
 
 We also handled retry you should see a dialog if network fails
 check out master branch and run project
+
+
+## Error handling
+We handled network error state, user should see a toast message when an network error occurs some other error like Server error was also properly handled 
+
 
 ## Festures
 
